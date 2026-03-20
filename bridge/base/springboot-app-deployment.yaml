@@ -1,0 +1,32 @@
+#! springboot-app-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: springboot-app
+    namespace: lehongphat
+    labels:
+        com.docker.compose.project: lehongphat
+        com.docker.compose.service: springboot-app
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: lehongphat
+            com.docker.compose.service: springboot-app
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: lehongphat
+                com.docker.compose.service: springboot-app
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: springboot-container
+                  image: lehongphat-springboot-app
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: springboot-8080
+                      containerPort: 8080

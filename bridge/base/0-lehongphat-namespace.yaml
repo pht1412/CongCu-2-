@@ -1,0 +1,8 @@
+#! 0-lehongphat-namespace.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: lehongphat
+    labels:
+        com.docker.compose.project: lehongphat

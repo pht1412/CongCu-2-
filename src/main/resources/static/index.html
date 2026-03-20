@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>CV Builder</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:#0d6efd;
+color:white;
+padding:15px;
+display:flex;
+justify-content:space-between;
+}
+
+header span{
+cursor:pointer;
+font-weight:bold;
+}
+
+.container{
+width:800px;
+margin:30px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.field{
+margin-bottom:20px;
+}
+
+label{
+font-weight:bold;
+display:block;
+margin-bottom:5px;
+}
+
+textarea{
+width:100%;
+min-height:60px;
+resize:vertical;
+padding:10px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 20px;
+background:#28a745;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#218838;
+}
+
+.add-btn{
+background:#007bff;
+margin-bottom:20px;
+}
+
+.cv-card{
+border:1px solid #ccc;
+padding:15px;
+margin-bottom:10px;
+border-radius:5px;
+}
+
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:20px;
+border:1px solid #ccc;
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div>CV Builder</div>
+<div>
+<span onclick="showForm()">Create CV</span> |
+<span onclick="loadCV()">My CV</span>
+</div>
+</header>
+
+<div class="container" id="formArea">
+
+<h2>Create CV</h2>
+
+<div id="fields">
+
+<div class="field">
+<label>Name</label>
+<textarea id="name"></textarea>
+</div>
+
+<div class="field">
+<label>Email</label>
+<textarea id="email"></textarea>
+</div>
+
+<div class="field">
+<label>Phone</label>
+<textarea id="phone"></textarea>
+</div>
+
+<div class="field">
+<label>Skill</label>
+<textarea id="skill"></textarea>
+</div>
+
+</div>
+
+<button class="add-btn" onclick="addField()">+ Add Field</button>
+
+<br><br>
+
+<button onclick="saveCV()">Save CV</button>
+
+</div>
+
+<div class="container" id="listArea" style="display:none">
+<h2>My CV</h2>
+<div id="cvList"></div>
+</div>
+
+<div class="popup" id="popup">
+CV saved successfully!
+</div>
+
+<script>
+
+function addField(){
+
+let name = prompt("Enter field name");
+
+if(!name) return;
+
+let div = document.createElement("div");
+div.className="field";
+
+div.innerHTML=
+"<label>"+name+"</label><textarea></textarea>";
+
+document.getElementById("fields").appendChild(div);
+}
+
+function saveCV(){
+
+let data={
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+phone:document.getElementById("phone").value,
+skill:document.getElementById("skill").value
+};
+
+fetch("/cv",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+})
+.then(res=>res.json())
+.then(d=>{
+showPopup();
+});
+
+}
+
+function showPopup(){
+
+let p=document.getElementById("popup");
+
+p.style.display="block";
+
+setTimeout(()=>{
+p.style.display="none";
+},2000);
+
+}
+
+function loadCV(){
+
+document.getElementById("formArea").style.display="none";
+document.getElementById("listArea").style.display="block";
+
+fetch("/cv")
+.then(res=>res.json())
+.then(data=>{
+
+let html="";
+
+data.forEach(cv=>{
+
+html+=`
+<div class="cv-card">
+<b>${cv.name}</b><br>
+Email: ${cv.email}<br>
+Phone: ${cv.phone}<br>
+Skill: ${cv.skill}
+</div>
+`;
+
+});
+
+document.getElementById("cvList").innerHTML=html;
+
+});
+
+}
+
+function showForm(){
+
+document.getElementById("formArea").style.display="block";
+document.getElementById("listArea").style.display="none";
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+# check if there is at least one published port
+
+#! springboot-app-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: springboot-app-published
+    namespace: lehongphat
+    labels:
+        com.docker.compose.project: lehongphat
+        com.docker.compose.service: springboot-app
+spec:
+    selector:
+        com.docker.compose.project: lehongphat
+        com.docker.compose.service: springboot-app
+    ports:
+        - name: springboot-8080
+          port: 8080
+          protocol: TCP
+          targetPort: springboot-8080
+
+# check if there is at least one published port
